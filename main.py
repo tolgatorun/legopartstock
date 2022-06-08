@@ -8,12 +8,19 @@ from selenium.webdriver.chrome.options import Options
 
 options = Options()
 options.add_argument("start-maximized")
+#options.add_argument("--headless")
 options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 ID_ARRAY = ['6329624/74085','6360199/77101']
 
-driver.get("https://www.lego.com/en-ca/page/static/pick-a-brick?query")
+def linkCreator(id_list):
+    tempLi = id_list[1].split('/')
+    link = "https://www.lego.com/en-ca/page/static/pick-a-brick?query=" + tempLi[0] + "%2F" + tempLi[1] + "&page=1&includeOutOfStock=true"
+    return link
+
+driver.get(linkCreator(ID_ARRAY))
+
 driver.implicitly_wait(10)
 
 popUp = driver.find_element(By.XPATH, '/html/body/div[1]/div[5]/div/div/div[1]/div[1]/div/button')
@@ -21,13 +28,6 @@ popUp.click()
 
 cookies = driver.find_element(By.XPATH, '/html/body/div[5]/div/aside/div/div/div[3]/div[1]/button[2]')
 cookies.click()
-
-outofStockButton = driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div[3]/div[1]/div/div/div[3]/div[2]/div/div/label')
-outofStockButton.click()
-searchBar = driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div[3]/div[1]/div/div/div[1]/div[1]/form/div/input')
-searchBar.send_keys(ID_ARRAY[1])
-searchButton = driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div[3]/div[1]/div/div/div[1]/div[1]/form/button')
-searchButton.click()
 
 if len(driver.find_elements(By.XPATH, '/html/body/div[1]/main/div[1]/div[4]/div[2]/div/ul/li/div/div[2]/div/button')) != 0:
     stockCheck = driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div[4]/div[2]/div/ul/li/div/div[2]/div/button')
